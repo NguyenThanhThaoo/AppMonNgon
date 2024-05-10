@@ -15,6 +15,7 @@ import Drinks from './Drinks';
 import LikeFoods from './LikeFoods';
 
 const Tab = createBottomTabNavigator();
+const currentUser = auth().currentUser
 const getTabBarIcon = icon => ({ tintColor }) => (
   <Icon name={icon} size={26} style={{ color: "#FF8C00" }} />
 );
@@ -22,7 +23,6 @@ const getTabBarIcon = icon => ({ tintColor }) => (
 const Tabs = () => {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState(null);
-  const currentUser = auth().currentUser
   useEffect(() => {
     if (currentUser) {
         console.log(currentUser.email);
@@ -38,7 +38,7 @@ useEffect(() => {
 }, []);
   return (
     <Tab.Navigator
-      initialRouteName='Services'
+      initialRouteName='Foods'
       barStyle={{ backgroundColor: "#FF8C00" }}
       labeled={false}
       activeTintColor={{ color: "#FF8C00" }}
@@ -46,7 +46,7 @@ useEffect(() => {
     >
       <Tab.Screen
         name="Món ăn"
-        component={Services}
+        component={Foods}
         options={{
           tabBarIcon: getTabBarIcon('restaurant-menu'),
         }}
@@ -58,7 +58,7 @@ useEffect(() => {
           tabBarIcon: getTabBarIcon('local-cafe'),
         }}
       />
-      {user && user.email !== 'thao@gmail.com' ? (
+      {user && user.email !== 'ntthao6722@gmail.com' ? (
       <Tab.Screen
         name="Yêu thích"
         component={LikeFoods}

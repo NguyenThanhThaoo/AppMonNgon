@@ -126,7 +126,7 @@ const Drinks = ({ navigation }) => {
                 <View>
                     <Text style={{ fontWeight: 'bold', color: '#FF6666', fontSize: 22 }}>Hôm Nay Bạn Uống Gì?</Text>
                 </View>
-                {user && user.email === 'thao@gmail.com' ? (<TouchableOpacity onPress={() => navigation.navigate('AddFoods')}>
+                {user && user.email === 'ntthao6722@gmail.com' ? (<TouchableOpacity onPress={() => navigation.navigate('AddFoods')}>
                     <Text>
                         <Icon name="playlist-add" size={35} color="#20B2AA" />
                     </Text>
@@ -159,7 +159,7 @@ const Drinks = ({ navigation }) => {
                                             </View>
 
                                         </View>
-                                        {user && user.email === 'thao@gmail.com' ? (
+                                        {user && user.email === 'ntthao6722@gmail.com' ? (
 
                                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
                                                 <TouchableOpacity

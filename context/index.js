@@ -31,8 +31,8 @@ function MyContextControllerProvider({ children }) {
             name: "admin",
             phone: "0969215279",
             address: "Binh Duong",
-            email: "thao@gmail.com",
-            password: "123123",
+            email: "ntthao6722@gmail.com",
+            password: "123456",
             role: "admin",
 
         },
@@ -52,13 +52,13 @@ function useMyContextController() {
     return context;
 }
 
-const USERS = firestore().collection("USERS")
+const USERS = firestore().collection("users")
 const login = async (dispatch, email, password) => {
     try {
       const userCredential = await auth().signInWithEmailAndPassword(email, password);
       const user = userCredential.user;
       const userDoc = await USERS.doc(email).get();
-  
+
       if (userDoc.exists) {
         const userData = userDoc.data();
         console.log("Đăng Nhập Thành Công với user:", userData);

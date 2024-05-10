@@ -7,13 +7,13 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { ScrollView } from 'react-native-virtualized-view';
 
 const AddFoods = ({ router, navigation }) => {
-  const { category: initialCategory } = router.params;
+  // const { category: initialCategory } = router.params;
   const [foods, setFoods] = useState('');
   const [ingredient, setIngredient] = useState('');
   const [instruct, setInstruct] = useState('');
   const [imageUri, setImageUri] = useState(null);
-  // const [category, setCategory] = useState(''); 
-  const [category, setCategory] = useState(initialCategory);
+  const [category, setCategory] = useState(''); 
+  // const [category, setCategory] = useState(initialCategory);
   const db = getFirestore();
 
   const pickImage = () => {
@@ -41,7 +41,7 @@ const AddFoods = ({ router, navigation }) => {
 
     
 
-    // const foodsRef = collection(db, category); 
+    const foodsRef = collection(db, category); 
 
     let imageUrl = null;
     if (imageUri) {

@@ -30,6 +30,7 @@ const SignUp = ({ navigation }) => {
             } catch (error) {
                 // console.error('Error creating user: ', error);
                 // Alert.alert('Error', 'An error occurred while creating the user');
+                console.log(error)
             }
         } else {
             //   Alert.alert('Error', 'Passwords do not match');

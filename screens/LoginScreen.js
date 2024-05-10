@@ -22,6 +22,7 @@ const LoginScreen = ({ navigation }) => {
       setPassword("");
       navigation.navigate("Home");
     } catch (error) {
+      console.log(error)
      Alert.alert("Thông báo","Sai thông tin đăng nhập!")
     }
   };

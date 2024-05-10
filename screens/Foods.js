@@ -23,6 +23,10 @@ const Foods = ({ navigation }) => {
     const toggleShowLike = () => {
         setShowLike(!showLike);
     };
+
+    
+
+
     useEffect(() => {
         if (currentUser) {
             console.log(currentUser.email);
@@ -75,7 +79,7 @@ const Foods = ({ navigation }) => {
           
         },{ foods });
     };
-
+  
     const handleDelete = (itemId) => {
         Alert.alert(
             'Xác nhận xoá',
@@ -125,7 +129,7 @@ const Foods = ({ navigation }) => {
                 <View>
                     <Text style={{ fontWeight: 'bold', color: '#FF6666', fontSize: 22 }}>Hôm Nay Bạn Ăn Gì?</Text>
                 </View>
-                {user && user.email === 'thao@gmail.com' ? (<TouchableOpacity onPress={() => navigation.navigate('AddFoods')}>
+                {user && user.email === 'ntthao6722@gmail.com' ? (<TouchableOpacity onPress={() => navigation.navigate('AddFoods')}>
                     <Text>
                         <Icon name="playlist-add" size={35} color="#20B2AA" />
                     </Text>
@@ -158,7 +162,8 @@ const Foods = ({ navigation }) => {
                                             </View>
 
                                         </View>
-                                        {user && user.email === 'thao@gmail.com' ? (
+                                       
+                                        {user && user.email === 'ntthao6722@gmail.com' ? (
 
                                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
                                                 <TouchableOpacity
