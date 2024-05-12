@@ -12,17 +12,21 @@ import { ScrollView } from 'react-native-virtualized-view';
 import { MyContextControllerProvider, useMyContextController, MyContext } from '../context';
 import auth from '@react-native-firebase/auth';
 
-const Drinks = ({ navigation }) => {
+const Foods = ({ navigation }) => {
     const currentUser = auth().currentUser
     const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState(null);
-    const [drinks, setDrinks] = useState([]);
-    const [drinksList, setfilterDrinks] = useState([]);
+    const [foods, setFoods] = useState([]);
+    const [foodsList, setfilterFoods] = useState([]);
     const { login } = useMyContextController();
     const [showLike, setShowLike] = useState(false);
     const toggleShowLike = () => {
         setShowLike(!showLike);
     };
+
+    
+
+
     useEffect(() => {
         if (currentUser) {
             console.log(currentUser.email);
@@ -39,42 +43,43 @@ const Drinks = ({ navigation }) => {
     const db = getFirestore();
     useEffect(() => {
         Icon.loadFont();
-
-        const drinksRef = collection(db, 'drinks');
-
-        const unsubscribe = onSnapshot(query(drinksRef), (querySnapshot) => {
-            const drinksList = [];
+    
+        const foodsRef = collection(db, 'foods');
+        const unsubscribe = onSnapshot(query(foodsRef), (querySnapshot) => {
+            const foodsList = [];
             if (querySnapshot) {
                 querySnapshot.forEach((doc) => {
-                    if (doc && doc.data()) {
-                        const drinksData = { ...doc.data(), id: doc.id };
-                        drinksList.push(drinksData);
+                    if (doc && doc.data() && doc.data().category === "Đồ uống") {
+                        const foodsData = { ...doc.data(), id: doc.id };
+                        foodsList.push(foodsData);
                     }
                 });
             }
-
-            setDrinks(drinksList);
-            setfilterDrinks(drinksList);
+    
+            setFoods(foodsList);
+            setfilterFoods(foodsList);
         });
         return () => unsubscribe();
     }, [db]);
+    
 
 
     const handleSearch = (query) => {
-        const filterData = drinks.filter((drink) =>
-            drink.name.toLowerCase().includes(query.toLowerCase())
+        const filterData = foods.filter((food) =>
+            food.name.toLowerCase().includes(query.toLowerCase())
         );
-        setfilterDrinks(filterData);
+        setfilterFoods(filterData);
     };
-    const handleDetails = (drinks) => {
+    const handleDetails = (foods) => {
         navigation.navigate('FoodsDetail', {
-            name: drinks.name,
-            ingredient: drinks.ingredient,
-            instruct: drinks.instruct,
-            imageUrl: drinks.imageUrl
-        });
+            name: foods.name,
+            ingredient: foods.ingredient,
+            instruct: foods.instruct,
+            imageUrl: foods.imageUrl,
+          
+        },{ foods });
     };
-
+  
     const handleDelete = (itemId) => {
         Alert.alert(
             'Xác nhận xoá',
@@ -89,7 +94,7 @@ const Drinks = ({ navigation }) => {
                     text: 'Xoá',
                     onPress: async () => {
                         try {
-                            await db.collection('drinks').doc(itemId).delete();
+                            await db.collection('foods').doc(itemId).delete();
                             Alert.alert("Thông báo !", "Món đã được xóa thành công!")
 
                         } catch (error) {
@@ -101,11 +106,9 @@ const Drinks = ({ navigation }) => {
             { cancelable: false }
         );
     };
-    const handleEdit = (itemId, category) => {
+    const handleEdit = (itemId, category ) => {
         navigation.navigate('EditFoods', { itemId, category });
     };
-
-    
     return (
         <View style={{ backgroundColor: '#fff' }}>
             <View style={{ width: "95%", alignItems: 'center', alignSelf: 'center', margin: 10 }}>
@@ -136,7 +139,7 @@ const Drinks = ({ navigation }) => {
             <ScrollView>
                 <FlatList
                     style={{ marginBottom: 150 }}
-                    data={drinksList}
+                    data={foodsList}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <View style={{ flexDirection: 'row', margin: 5 }}>
@@ -159,6 +162,7 @@ const Drinks = ({ navigation }) => {
                                             </View>
 
                                         </View>
+                                       
                                         {user && user.email === 'ntthao6722@gmail.com' ? (
 
                                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
@@ -172,8 +176,7 @@ const Drinks = ({ navigation }) => {
                                                     onPress={() => handleDelete(item.id)}>
                                                     <Icon name="delete" size={24} color="#fff" />
                                                 </TouchableOpacity>
-                                            </View>
-                                        ) : null}
+                                            </View>):null}
                                     </View>
                                 </TouchableOpacity>
                             </View>
@@ -202,6 +205,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
-export default Drinks;
+export default Foods;
 
 

@@ -1,20 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Pressable, Alert } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { getFirestore, collection, addDoc } from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
+import { getFirestore, collection, getDocs, addDoc } from '@react-native-firebase/firestore';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { ScrollView } from 'react-native-virtualized-view';
+import { Picker } from '@react-native-picker/picker'; 
+import storage from '@react-native-firebase/storage';
 
-const AddFoods = ({ router, navigation }) => {
-  // const { category: initialCategory } = router.params;
+const AddFoods = ({ navigation }) => {
   const [foods, setFoods] = useState('');
   const [ingredient, setIngredient] = useState('');
   const [instruct, setInstruct] = useState('');
   const [imageUri, setImageUri] = useState(null);
-  const [category, setCategory] = useState(''); 
-  // const [category, setCategory] = useState(initialCategory);
-  const db = getFirestore();
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState('');
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const db = getFirestore();
+        const categoriesSnapshot = await getDocs(collection(db, 'category'));
+        const categoriesList = categoriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setCategories(categoriesList);
+      } catch (error) {
+        console.error('Error fetching categories: ', error);
+      }
+    };
+  
+    fetchCategories();
+  }, []);
 
   const pickImage = () => {
     launchImageLibrary({ mediaType: 'photo' }, (response) => {
@@ -31,56 +45,39 @@ const AddFoods = ({ router, navigation }) => {
   const handleAddFoods = async () => {
     if (!foods || !ingredient || !instruct || !category || !imageUri) {
       Alert.alert("Thông báo!", "Vui lòng nhập đầy đủ!");
-      console.log('Please fill in all fields.');
-      return;
-    }
-    if (category !== 'foods' && category !== 'drinks') {
-      Alert.alert("Thông báo!", "Vui lòng nhập foods hoặc drinks !");
       return;
     }
 
-    
-
-    const foodsRef = collection(db, category); 
-
-    let imageUrl = null;
-    if (imageUri) {
-      const response = await fetch(imageUri);
-      const blob = await response.blob();
-
-      const storageRef = storage().ref(`Images/${foods}-${Date.now()}`);
-      await storageRef.put(blob);
-      imageUrl = await storageRef.getDownloadURL();
-    }
-
-    // try {
-    //   await addDoc(foodsRef, {
-    //     name: foods,
-    //     ingredient: ingredient,
-    //     instruct: instruct,
-    //     imageUrl,
-    //     status: 'unlike',
-    //     category,
-    //   });
-      try {
-        await addDoc(collection(getFirestore(), category), {
-          name: foods,
-          ingredient: ingredient,
-          instruct: instruct,
-          imageUrl,
-          status: 'unlike',
-          category,
-        });
+    try {
+      const imageUrl = await uploadImage(imageUri);
+      const foodRef = collection(getFirestore(), 'foods');
+      const selectedCategory = categories.find(cat => cat.id === category);
+      const CategoryName = selectedCategory ? selectedCategory.CategoryName : '';
+      await addDoc(foodRef, {
+        name: foods,
+        ingredient: ingredient,
+        instruct: instruct,
+        imageUrl: imageUrl,
+        status: 'unlike',
+        category: CategoryName
+      });
 
       navigation.navigate('Home');
       setFoods('');
       setImageUri(null);
       setIngredient('');
       setInstruct('');
-      setCategory(''); 
     } catch (error) {
       console.error('Error adding food: ', error);
     }
+  };
+
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const storageRef = storage().ref(`Images/${foods}-${Date.now()}`);
+    await storageRef.put(blob);
+    return await storageRef.getDownloadURL();
   };
 
   return (
@@ -90,37 +87,38 @@ const AddFoods = ({ router, navigation }) => {
           style={{ margin: 10, borderRadius: 10 }}
           placeholder="Nhập tên món ăn"
           value={foods}
-          underlineColor='transparent'
-          onChangeText={foods => setFoods(foods)}
+          onChangeText={setFoods}
         />
         <TextInput
           style={{ margin: 10, borderRadius: 10 }}
           placeholder="Nhập nguyên liệu"
           value={ingredient}
-          underlineColor='transparent'
-          onChangeText={ingredient => setIngredient(ingredient)}
+          onChangeText={setIngredient}
           multiline={true}
           numberOfLines={8}
         />
         <TextInput
           style={{ margin: 10, borderRadius: 10 }}
-          placeholder="Nhập hướng dẫn thực hện"
+          placeholder="Nhập hướng dẫn thực hiện"
           value={instruct}
-          underlineColor='transparent'
-          onChangeText={instruct => setInstruct(instruct)}
+          onChangeText={setInstruct}
           multiline={true}
           numberOfLines={10}
         />
-        <TextInput
-          style={{ margin: 10, borderRadius: 10 }}
-          placeholder="Nhập phân loại (foods/drinks)"
-          value={category}
-          underlineColor='transparent'
-          onChangeText={(category) => setCategory(category.toLowerCase())}
-        />
+        <View style={{ margin: 10, borderRadius: 10, borderColor: 'gray', borderWidth: 1 }}>
+          <Picker
+            selectedValue={category}
+            onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}
+          >
+            <Picker.Item label="Chọn loại món ăn" value="" />
+            {categories.map(cat => (
+              <Picker.Item key={cat.id} label={cat.CategoryName} value={cat.id} />
+            ))}
+          </Picker>
+        </View>
 
         <Pressable onPress={pickImage} style={{ margin: 10 }}>
-          <Text style={{ color: 'blue' }}>Select Image</Text>
+          <Text style={{ color: 'blue' }}>Chọn ảnh</Text>
         </Pressable>
 
         {imageUri && (
@@ -139,7 +137,7 @@ const AddFoods = ({ router, navigation }) => {
               borderRadius: 10,
             }}
           >
-            <Text style={{ color: '#fff', fontSize: 15, fontWeight: 'bold' }}>Add</Text>
+            <Text style={{ color: '#fff', fontSize: 15, fontWeight: 'bold' }}>Thêm</Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -148,6 +146,3 @@ const AddFoods = ({ router, navigation }) => {
 };
 
 export default AddFoods;
-
-
-

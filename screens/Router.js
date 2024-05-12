@@ -28,9 +28,9 @@ const Router = () => {
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}  />
             <Stack.Screen name="Home" component={HomeScreen}options={{ headerShown: false }}  />
             <Stack.Screen name="Foods" component={Foods}options={{ headerShown: false }}  />
-            <Stack.Screen name="AddFoods" component={AddFoods} />
-            <Stack.Screen name="FoodsDetail" component={FoodsDetail} />
-            <Stack.Screen name="EditFoods" component={EditFoods} />
+            <Stack.Screen name="AddFoods" component={AddFoods} options={{ title: 'Thêm món mới'  }}/>
+            <Stack.Screen name="FoodsDetail" component={FoodsDetail} options={{ title: 'Chi tiết món'  }}  />
+            <Stack.Screen name="EditFoods" component={EditFoods} options={{ title: 'Chỉnh sửa món'  }}/>
             <Stack.Screen name="Logout" component={Logout} options={{ headerShown: false }} />
             <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
             <Stack.Screen name="Reset" component={Reset} options={{ headerShown: false }} />

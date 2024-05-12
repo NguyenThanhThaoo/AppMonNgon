@@ -43,25 +43,25 @@ const Foods = ({ navigation }) => {
     const db = getFirestore();
     useEffect(() => {
         Icon.loadFont();
-
+    
         const foodsRef = collection(db, 'foods');
-
         const unsubscribe = onSnapshot(query(foodsRef), (querySnapshot) => {
             const foodsList = [];
             if (querySnapshot) {
                 querySnapshot.forEach((doc) => {
-                    if (doc && doc.data()) {
+                    if (doc && doc.data() && doc.data().category === "Thức ăn") {
                         const foodsData = { ...doc.data(), id: doc.id };
                         foodsList.push(foodsData);
                     }
                 });
             }
-
+    
             setFoods(foodsList);
             setfilterFoods(foodsList);
         });
         return () => unsubscribe();
     }, [db]);
+    
 
 
     const handleSearch = (query) => {

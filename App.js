@@ -14,35 +14,35 @@ import LoginScreen from './screens/LoginScreen';
 
 const Stack = createStackNavigator();
 const App = () => {
-  const initial = async () => {
-    const USERS = firestore().collection("users")
-    const admin = {
-      name: "admin",
-      phone: "0969215279",
-      address: "Binh Duong",
-      email: "thao@gmail.com",
-      password: "123123",
-      role: "admin",
-    };
+  // const initial = async () => {
+  //   const USERS = firestore().collection("users")
+  //   const admin = {
+  //     name: "admin",
+  //     phone: "0969215279",
+  //     address: "Binh Duong",
+  //     email: "thao@gmail.com",
+  //     password: "123123",
+  //     role: "admin",
+  //   };
 
-    await USERS.doc(admin.email).onSnapshot((u) => {
-      if (u && u.exists) {
-        console.log("User already exists!");
-      } else {
-        auth()
-          .createUserWithEmailAndPassword(admin.email, admin.password)
-          .then(() =>
-            USERS.doc(admin.email)
-              .set(admin)
-              .then(() => console.log("Add new user admin!"))
-          );
-      }
-    })
+  //   await USERS.doc(admin.email).onSnapshot((u) => {
+  //     if (u && u.exists) {
+  //       console.log("User already exists!");
+  //     } else {
+  //       auth()
+  //         .createUserWithEmailAndPassword(admin.email, admin.password)
+  //         .then(() =>
+  //           USERS.doc(admin.email)
+  //             .set(admin)
+  //             .then(() => console.log("Add new user admin!"))
+  //         );
+  //     }
+  //   })
 
-  }
-  useEffect(() => {
-    initial()
-  }, [])
+  // }
+  // useEffect(() => {
+  //   initial()
+  // }, [])
   return (
     <MyContextControllerProvider>
       <NavigationContainer>
