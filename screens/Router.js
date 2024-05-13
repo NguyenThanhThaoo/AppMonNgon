@@ -15,7 +15,7 @@ import Foods from "./Foods";
 import FoodsDetail from "../screens/Detail";
 import Reset from "./ResetPassword";
 import LikeFoods from "./LikeFoods";
-
+import Approve from "./Approve";
 
 const Stack = createStackNavigator();
 const Router = () => {
@@ -35,6 +35,8 @@ const Router = () => {
             <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
             <Stack.Screen name="Reset" component={Reset} options={{ headerShown: false }} />
             <Stack.Screen name="LikeFoods" component={LikeFoods} options={{ headerShown: false }} />
+            <Stack.Screen name="Approve" component={Approve} options={{ title: 'Duyệt bài'  }} />
+
         </Stack.Navigator>
 
     );

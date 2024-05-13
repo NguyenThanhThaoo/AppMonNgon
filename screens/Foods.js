@@ -20,6 +20,7 @@ const Foods = ({ navigation }) => {
     const [foodsList, setfilterFoods] = useState([]);
     const { login } = useMyContextController();
     const [showLike, setShowLike] = useState(false);
+    const userEmail = currentUser ? currentUser.email : null;
     const toggleShowLike = () => {
         setShowLike(!showLike);
     };
@@ -49,7 +50,7 @@ const Foods = ({ navigation }) => {
             const foodsList = [];
             if (querySnapshot) {
                 querySnapshot.forEach((doc) => {
-                    if (doc && doc.data() && doc.data().category === "Thức ăn") {
+                    if (doc && doc.data() && doc.data().category === "Thức ăn" && doc.data().email === userEmail) {
                         const foodsData = { ...doc.data(), id: doc.id };
                         foodsList.push(foodsData);
                     }
@@ -106,9 +107,10 @@ const Foods = ({ navigation }) => {
             { cancelable: false }
         );
     };
-    const handleEdit = (itemId, category ) => {
-        navigation.navigate('EditFoods', { itemId, category });
-    };
+    const handleEdit = (itemId, category) => {
+        navigation.navigate('EditFoods', { foodId: itemId, category });
+      };
+      
     return (
         <View style={{ backgroundColor: '#fff' }}>
             <View style={{ width: "95%", alignItems: 'center', alignSelf: 'center', margin: 10 }}>
@@ -129,11 +131,11 @@ const Foods = ({ navigation }) => {
                 <View>
                     <Text style={{ fontWeight: 'bold', color: '#FF6666', fontSize: 22 }}>Hôm Nay Bạn Ăn Gì?</Text>
                 </View>
-                {user && user.email === 'ntthao6722@gmail.com' ? (<TouchableOpacity onPress={() => navigation.navigate('AddFoods')}>
+                <TouchableOpacity onPress={() => navigation.navigate('AddFoods')}>
                     <Text>
                         <Icon name="playlist-add" size={35} color="#20B2AA" />
                     </Text>
-                </TouchableOpacity>) : null}
+                </TouchableOpacity>
 
             </View>
             <ScrollView>
@@ -163,7 +165,7 @@ const Foods = ({ navigation }) => {
 
                                         </View>
                                        
-                                        {user && user.email === 'ntthao6722@gmail.com' ? (
+                                   
 
                                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
                                                 <TouchableOpacity
@@ -176,7 +178,7 @@ const Foods = ({ navigation }) => {
                                                     onPress={() => handleDelete(item.id)}>
                                                     <Icon name="delete" size={24} color="#fff" />
                                                 </TouchableOpacity>
-                                            </View>):null}
+                                            </View>
                                     </View>
                                 </TouchableOpacity>
                             </View>

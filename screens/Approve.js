@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, FlatList, Pressable, StyleSheet, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconMT from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getFirestore, collection, query, onSnapshot } from '@react-native-firebase/firestore';
+import { getFirestore, collection, query, onSnapshot,doc, updateDoc } from '@react-native-firebase/firestore';
 import { createStackNavigator } from '@react-navigation/stack';
 import AddFoods from './Add';
 import { Searchbar } from 'react-native-paper';
@@ -12,11 +12,11 @@ import { ScrollView } from 'react-native-virtualized-view';
 import { MyContextControllerProvider, useMyContextController, MyContext } from '../context';
 import auth from '@react-native-firebase/auth';
 
-const Foods = ({ navigation }) => {
+
+const Approve = ({ navigation }) => {
     const currentUser = auth().currentUser
     const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState(null);
-    const userEmail = currentUser ? currentUser.email : null;
     const [foods, setFoods] = useState([]);
     const [foodsList, setfilterFoods] = useState([]);
     const { login } = useMyContextController();
@@ -50,7 +50,7 @@ const Foods = ({ navigation }) => {
             const foodsList = [];
             if (querySnapshot) {
                 querySnapshot.forEach((doc) => {
-                    if (doc && doc.data() && doc.data().category === "Đồ uống" && doc.data().email === userEmail) {
+                    if (doc && doc.data() && doc.data().approve === false) {
                         const foodsData = { ...doc.data(), id: doc.id };
                         foodsList.push(foodsData);
                     }
@@ -65,12 +65,7 @@ const Foods = ({ navigation }) => {
     
 
 
-    const handleSearch = (query) => {
-        const filterData = foods.filter((food) =>
-            food.name.toLowerCase().includes(query.toLowerCase())
-        );
-        setfilterFoods(filterData);
-    };
+   
     const handleDetails = (foods) => {
         navigation.navigate('FoodsDetail', {
             name: foods.name,
@@ -107,35 +102,39 @@ const Foods = ({ navigation }) => {
             { cancelable: false }
         );
     };
-    const handleEdit = (itemId, category ) => {
-        navigation.navigate('EditFoods', { itemId, category });
-    };
+    const handleApprove = (itemId) => {
+        Alert.alert(
+          'Xác nhận duyệt',
+          'Bạn có chắc chắn muốn duyệt món ăn này?',
+          [
+            {
+              text: 'Hủy',
+              style: 'cancel',
+            },
+            {
+              text: 'Duyệt',
+              onPress: async () => {
+                try {
+                  const db = getFirestore();
+                  const foodRef = doc(db, 'foods', itemId);
+                  await updateDoc(foodRef, {
+                    approve: true,
+                  });
+                  navigation.navigate('Home');
+                } catch (error) {
+                  console.error('Lỗi khi duyệt món:', error);
+                }
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      };
+      
     return (
         <View style={{ backgroundColor: '#fff' }}>
             <View style={{ width: "95%", alignItems: 'center', alignSelf: 'center', margin: 10 }}>
-                <Searchbar
-                    style={{
-                        ...styles.item,
-                        padding: 2,
-                        backgroundColor: 'transparent',
-                        margin: 0,
-                        height: 60,
-                        justifyContent: 'center',
-                    }}
-                    placeholder="Tìm kiếm..."
-                    onChangeText={handleSearch}
-                />
-            </View>
-            <View style={styles.container}>
-                <View>
-                    <Text style={{ fontWeight: 'bold', color: '#FF6666', fontSize: 22 }}>Hôm Nay Bạn Uống Gì?</Text>
-                </View>
-               <TouchableOpacity onPress={() => navigation.navigate('AddFoods')}>
-                    <Text>
-                        <Icon name="playlist-add" size={35} color="#20B2AA" />
-                    </Text>
-                </TouchableOpacity>
-
+                
             </View>
             <ScrollView>
                 <FlatList
@@ -164,20 +163,20 @@ const Foods = ({ navigation }) => {
 
                                         </View>
                                        
-                                     
+                                        {user && user.email === 'ntthao6722@gmail.com' ? (
 
                                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
                                                 <TouchableOpacity
-                                                    style={{ padding: 5, backgroundColor: 'green', borderRadius: 100, margin: 5 }}
-                                                    onPress={() => handleEdit(item.id)}>
-                                                    <Icon name="edit" size={24} color="#fff" />
-                                                </TouchableOpacity>
-                                                <TouchableOpacity
                                                     style={{ padding: 5, backgroundColor: 'red', borderRadius: 100, margin: 5 }}
                                                     onPress={() => handleDelete(item.id)}>
-                                                    <Icon name="delete" size={24} color="#fff" />
+                                                    <Icon name="cancel" size={24} color="#fff" />
                                                 </TouchableOpacity>
-                                            </View>
+                                                <TouchableOpacity
+                                                    style={{ padding: 5, backgroundColor: 'green', borderRadius: 100, margin: 5 }}
+                                                    onPress={() => handleApprove(item.id)}>
+                                                    <Icon name="check-circle" size={24} color="#fff" />
+                                                </TouchableOpacity>
+                                            </View>):null}
                                     </View>
                                 </TouchableOpacity>
                             </View>
@@ -206,6 +205,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
-export default Foods;
+export default Approve;
 
 

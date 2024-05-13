@@ -13,6 +13,7 @@ import Logout from './Logout';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Drinks from './Drinks';
 import LikeFoods from './LikeFoods';
+import Approve from './Approve';
 
 const Tab = createBottomTabNavigator();
 const currentUser = auth().currentUser
@@ -58,6 +59,7 @@ useEffect(() => {
           tabBarIcon: getTabBarIcon('local-cafe'),
         }}
       />
+      
       {user && user.email !== 'ntthao6722@gmail.com' ? (
       <Tab.Screen
         name="Yêu thích"
@@ -66,6 +68,15 @@ useEffect(() => {
           tabBarIcon: getTabBarIcon('favorite'),
         }}
       /> ) :null}
+      {user && user.email === 'ntthao6722@gmail.com' ? (
+     <Tab.Screen
+     name="Duyệt món"
+     component={Approve}
+     options={{
+       tabBarIcon: getTabBarIcon('wysiwyg'),
+     }}
+   /> ) :null}
+      
       <Tab.Screen
         name="Đăng xuất"
         component={Logout}

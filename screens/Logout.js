@@ -1,27 +1,27 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { View, StyleSheet, Text, Alert, Pressable } from 'react-native';
-import { BackHandler } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, Text, Pressable } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import { MyContextControllerProvider, useMyContextController, MyContext, logout } from '../context';
+import { useMyContextController } from '../context';
 
 const Logout = ({ navigation }) => {
-    const [controller, dispatch] = useMyContextController();
-    const { logout } = controller;
+    const [, , logout] = useMyContextController();
+
     const handleLogout = async () => {
         try {
-           await auth().signOut(); 
+            await auth().signOut(); 
             navigation.navigate('Login');
         } catch (error) {
             console.error('Lỗi khi đăng xuất:', error);
         }
     };
+
     return (
         <View style={styles.container}>
             <Pressable
-                    style={styles.textButton}
-                    onPress={handleLogout}>
-                    <Text style={{alignSelf: 'center', color: '#fff', fontSize: 18, fontWeight: 'bold' }}>Đăng Xuất</Text>
-                </Pressable>
+                style={styles.textButton}
+                onPress={handleLogout}>
+                <Text style={{ alignSelf: 'center', color: '#fff', fontSize: 18, fontWeight: 'bold' }}>Đăng Xuất</Text>
+            </Pressable>
         </View>
     );
 }
@@ -31,22 +31,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor:'white',
+        backgroundColor: 'white',
     },
-    textButton:{
+    textButton: {
         margin: 1,
         padding: 15,
-        borderTopRightRadius: 20,
-        borderTopLeftRadius: 20,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
+        borderRadius: 20,
         backgroundColor: '#FFB90F',
     },
-
-    text: {
-        color: 'white',
-        fontWeight: 'bold',
-    }
-})
+});
 
 export default Logout;

@@ -12,14 +12,17 @@ MyContext.displayName = "MyContextContext";
 
 function reducer(state, action) {
     switch (action.type) {
-        case "USER_LOGIN": {
-            return { ...state, darkMode: action.value };
-        }
-        default: {
-            throw new Error(`Unhandled action type: ${action.type}`);
-        }
+      case "USER_LOGIN": {
+        return { ...state, user: action.value };
+      }
+      case "USER_LOGOUT": {
+        return { ...state, user: null };
+      }
+      default: {
+        throw new Error(`Unhandled action type: ${action.type}`);
+      }
     }
-}
+  }
 // React context provider
 function MyContextControllerProvider({ children }) {
    
@@ -37,8 +40,25 @@ function MyContextControllerProvider({ children }) {
 
         },
     };
+
+
     const [controller, dispatch] = useReducer(reducer, initialState);
-    const value = useMemo(() => [controller, dispatch], [controller, dispatch]);
+
+    const logout = async () => {
+        try {
+          await auth().signOut();
+          dispatch({ type: "USER_LOGOUT" });
+        } catch (error) {
+          console.error("Error logging out:", error);
+          throw error;
+        }
+      };
+
+
+    const value = useMemo(() => [controller, dispatch, logout], [
+    controller,
+    dispatch,
+  ]);
     return <MyContext.Provider value={value}>{children}</MyContext.Provider>;
 }
 //React custom hook for using context

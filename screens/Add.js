@@ -6,7 +6,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { ScrollView } from 'react-native-virtualized-view';
 import { Picker } from '@react-native-picker/picker'; 
 import storage from '@react-native-firebase/storage';
-
+import auth from '@react-native-firebase/auth';
 const AddFoods = ({ navigation }) => {
   const [foods, setFoods] = useState('');
   const [ingredient, setIngredient] = useState('');
@@ -14,6 +14,24 @@ const AddFoods = ({ navigation }) => {
   const [imageUri, setImageUri] = useState(null);
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState('');
+  const currentUser = auth().currentUser
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState(null);
+
+
+  useEffect(() => {
+    if (currentUser) {
+        console.log(currentUser.email);
+    }
+}, [currentUser]);
+const onAuthStateChanged = user => {
+    setUser(user);
+    if (initializing) setInitializing(false);
+};
+useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+}, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -59,7 +77,9 @@ const AddFoods = ({ navigation }) => {
         instruct: instruct,
         imageUrl: imageUrl,
         status: 'unlike',
-        category: CategoryName
+        category: CategoryName,
+        approve :false,
+        email: currentUser.email
       });
 
       navigation.navigate('Home');
