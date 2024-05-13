@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Drinks from './Drinks';
 import LikeFoods from './LikeFoods';
 import Approve from './Approve';
-
+import List from './List';
 const Tab = createBottomTabNavigator();
 const currentUser = auth().currentUser
 const getTabBarIcon = icon => ({ tintColor }) => (
@@ -46,14 +46,21 @@ useEffect(() => {
       inactiveColor={{ color: "#FF8C00" }}
     >
       <Tab.Screen
-        name="Món ăn"
+        name="Danh sách món"
+        component={List}
+        options={{
+          tabBarIcon: getTabBarIcon('menu-book'),
+        }}
+      />
+      <Tab.Screen
+        name="QL Món ăn"
         component={Foods}
         options={{
           tabBarIcon: getTabBarIcon('restaurant-menu'),
         }}
       />
       <Tab.Screen
-        name="Đồ uống"
+        name="QL Đồ uống"
         component={Drinks}
         options={{
           tabBarIcon: getTabBarIcon('local-cafe'),
