@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, FlatList, Pressable, StyleSheet, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconMT from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getFirestore, collection, query, onSnapshot } from '@react-native-firebase/firestore';
+import { getFirestore, collection, query, onSnapshot, getDocs } from '@react-native-firebase/firestore';
 import { createStackNavigator } from '@react-navigation/stack';
 import AddFoods from './Add';
 import { Searchbar } from 'react-native-paper';
@@ -17,15 +17,31 @@ const List = ({ navigation }) => {
     const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState(null);
     const [foods, setFoods] = useState([]);
-    const [foodsList, setfilterFoods] = useState([]);
+    const [foodsList, setFilterFoods] = useState([]);
+    // const [categories, setCategories] = useState([]);
+    // const [category, setCategory] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('all');
     const { login } = useMyContextController();
     const [showLike, setShowLike] = useState(false);
     const userEmail = currentUser ? currentUser.email : null;
+    const db = getFirestore();
     const toggleShowLike = () => {
         setShowLike(!showLike);
     };
 
-    
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(query(collection(db, 'foods')), (querySnapshot) => {
+            const foodsList = [];
+            querySnapshot.forEach((doc) => {
+                const foodsData = { ...doc.data(), id: doc.id };
+                foodsList.push(foodsData);
+            });
+            setFoods(foodsList);
+            setFilterFoods(foodsList);
+        });
+        return () => unsubscribe();
+    }, [db]);
 
 
     useEffect(() => {
@@ -37,39 +53,57 @@ const List = ({ navigation }) => {
         setUser(user);
         if (initializing) setInitializing(false);
     };
+
+    // useEffect(() => {
+    //     const fetchCategories = async () => {
+    //       try {
+    //         // const db = getFirestore();
+    //         const categoriesSnapshot = await getDocs(collection(db, 'category'));
+    //         const categoriesList = categoriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    //         setCategories(categoriesList);
+    //       } catch (error) {
+    //         console.error('Error fetching categories: ', error);
+    //       }
+    //     };
+    
+    //     fetchCategories();
+    //   }, []);
+
+
+
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
         return subscriber;
     }, []);
-    const db = getFirestore();
+    // const db = getFirestore();
     useEffect(() => {
         Icon.loadFont();
-    
+
         const foodsRef = collection(db, 'foods');
         const unsubscribe = onSnapshot(query(foodsRef), (querySnapshot) => {
             const foodsList = [];
             if (querySnapshot) {
                 querySnapshot.forEach((doc) => {
-                    if (doc && doc.data() && doc.data().approve === true ) {
+                    if (doc && doc.data() && doc.data().approve === true) {
                         const foodsData = { ...doc.data(), id: doc.id };
                         foodsList.push(foodsData);
                     }
                 });
             }
-    
+
             setFoods(foodsList);
-            setfilterFoods(foodsList);
+            setFilterFoods(foodsList);
         });
         return () => unsubscribe();
     }, [db]);
-    
+
 
 
     const handleSearch = (query) => {
         const filterData = foods.filter((food) =>
             food.name.toLowerCase().includes(query.toLowerCase())
         );
-        setfilterFoods(filterData);
+        setFilterFoods(filterData);
     };
     const handleDetails = (foods) => {
         navigation.navigate('FoodsDetail', {
@@ -77,10 +111,10 @@ const List = ({ navigation }) => {
             ingredient: foods.ingredient,
             instruct: foods.instruct,
             imageUrl: foods.imageUrl,
-          
-        },{ foods });
+
+        }, { foods });
     };
-  
+
     const handleDelete = (itemId) => {
         Alert.alert(
             'Xác nhận xoá',
@@ -109,8 +143,21 @@ const List = ({ navigation }) => {
     };
     const handleEdit = (itemId, category) => {
         navigation.navigate('EditFoods', { foodId: itemId, category });
-      };
-      
+    };
+    const handleCategoryChange = (category) => {
+        setSelectedCategory(category);
+        if (category === 'all') {
+            setFilterFoods(foods);
+            // console.log("Filtered Foods (All):", foods);
+        } else {
+            const filteredFoods = foods.filter((foods) => foods.category === category);
+            setFilterFoods(filteredFoods);
+            // console.log("Filtered Foods (Category):", filteredFoods);
+
+        }
+    };
+
+
     return (
         <View style={{ backgroundColor: '#fff' }}>
             <View style={{ width: "95%", alignItems: 'center', alignSelf: 'center', margin: 10 }}>
@@ -127,8 +174,19 @@ const List = ({ navigation }) => {
                     onChangeText={handleSearch}
                 />
             </View>
-           
+
             <ScrollView>
+                <View style={styles.container}>
+                    <TouchableOpacity onPress={() => handleCategoryChange('all')} style={[styles.categoryButton, selectedCategory === 'all' && styles.selectedCategory]}>
+                        <Text style={{ color: selectedCategory === 'all' ? '#fff' : '#000' }}>Tất cả</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleCategoryChange('Thức ăn')} style={[styles.categoryButton, selectedCategory === 'Thức ăn' && styles.selectedCategory]}>
+                        <Text style={{ color: selectedCategory === 'Thức ăn' ? '#fff' : '#000' }}>Thức ăn</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleCategoryChange('Đồ uống')} style={[styles.categoryButton, selectedCategory === 'Đồ uống' && styles.selectedCategory]}>
+                        <Text style={{ color: selectedCategory === 'Đồ uống' ? '#fff' : '#000' }}>Đồ uống</Text>
+                    </TouchableOpacity>
+                </View>
                 <FlatList
                     style={{ marginBottom: 150 }}
                     data={foodsList}
@@ -154,10 +212,10 @@ const List = ({ navigation }) => {
                                             </View>
 
                                         </View>
-                                       
-                                   
 
-                                           
+
+
+
                                     </View>
                                 </TouchableOpacity>
                             </View>
@@ -175,6 +233,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 20,
+    },
+    categoryButton: {
+        paddingVertical: 8,
+        paddingHorizontal: 20,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#FFB90F',
+    },
+    selectedCategory: {
+        backgroundColor: '#FFB90F',
     },
     item: {
         width: '100%',

@@ -4,7 +4,7 @@ import { TextInput } from 'react-native-paper';
 import { getFirestore, collection, getDocs, addDoc } from '@react-native-firebase/firestore';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { ScrollView } from 'react-native-virtualized-view';
-import { Picker } from '@react-native-picker/picker'; 
+import { Picker } from '@react-native-picker/picker';
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
 const AddFoods = ({ navigation }) => {
@@ -21,17 +21,17 @@ const AddFoods = ({ navigation }) => {
 
   useEffect(() => {
     if (currentUser) {
-        console.log(currentUser.email);
+      console.log(currentUser.email);
     }
-}, [currentUser]);
-const onAuthStateChanged = user => {
+  }, [currentUser]);
+  const onAuthStateChanged = user => {
     setUser(user);
     if (initializing) setInitializing(false);
-};
-useEffect(() => {
+  };
+  useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
-}, []);
+  }, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -44,7 +44,7 @@ useEffect(() => {
         console.error('Error fetching categories: ', error);
       }
     };
-  
+
     fetchCategories();
   }, []);
 
@@ -78,7 +78,7 @@ useEffect(() => {
         imageUrl: imageUrl,
         status: 'unlike',
         category: CategoryName,
-        approve :false,
+        approve: false,
         email: currentUser.email
       });
 
