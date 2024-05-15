@@ -107,9 +107,10 @@ const Foods = ({ navigation }) => {
             { cancelable: false }
         );
     };
-    const handleEdit = (itemId, category ) => {
-        navigation.navigate('EditFoods', { itemId, category });
-    };
+    const handleEdit = (itemId, category) => {
+        navigation.navigate('EditFoods', { foodId: itemId, category });
+      };
+      
     return (
         <View style={{ backgroundColor: '#fff', height:'100%' }}>
             <View style={{ width: "95%", alignItems: 'center', alignSelf: 'center', margin: 10 }}>
