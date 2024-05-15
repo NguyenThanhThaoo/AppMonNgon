@@ -132,7 +132,7 @@ const Approve = ({ navigation }) => {
       };
       
     return (
-        <View style={{ backgroundColor: '#fff' }}>
+        <View style={{ backgroundColor: '#fff', height:'100%' }}>
             <View style={{ width: "95%", alignItems: 'center', alignSelf: 'center', margin: 10 }}>
                 
             </View>
@@ -191,6 +191,7 @@ const Approve = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor:'#ffff',
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 20,

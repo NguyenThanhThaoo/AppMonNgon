@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, Pressable, Alert } from 'react-native';
+import { View, Text, Image, Pressable, Alert, ScrollView } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { getFirestore, collection, getDocs, updateDoc, doc } from '@react-native-firebase/firestore';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { ScrollView } from 'react-native-virtualized-view';
 import { Picker } from '@react-native-picker/picker'; 
 import storage from '@react-native-firebase/storage';
 
@@ -80,7 +79,7 @@ const EditFood = ({ navigation, route }) => {
         instruct: instruct,
         imageUrl: imageUrl,
         category: CategoryName,
-        approve :false
+        approve: false
       });
 
       navigation.navigate('Home');
@@ -98,7 +97,7 @@ const EditFood = ({ navigation, route }) => {
   };
 
   return (
-    <View style={{ backgroundColor: '#fff' }}>
+    <View style={{ backgroundColor: '#fff', flex: 1 }}>
       <ScrollView>
         <TextInput
           style={{ margin: 10, borderRadius: 10 }}
@@ -122,42 +121,44 @@ const EditFood = ({ navigation, route }) => {
           multiline={true}
           numberOfLines={10}
         />
-        <View style={{ margin: 10, borderRadius: 10, borderColor: 'gray', borderWidth: 1 }}>
-          <Picker
-            selectedValue={category}
-            onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}
-          >
-            <Picker.Item label="Chọn loại món ăn" value="" />
-            {categories.map(cat => (
-              <Picker.Item key={cat.id} label={cat.CategoryName} value={cat.id} />
-            ))}
-          </Picker>
-        </View>
+  
+      <View style={{ margin: 10, borderRadius: 10, borderColor: 'gray', borderWidth: 1 }}>
+        <Picker
+          selectedValue={category}
+          onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}
+        >
+          <Picker.Item label="Chọn loại món ăn" value="" />
+          {categories.map(cat => (
+            <Picker.Item key={cat.id} label={cat.CategoryName} value={cat.id} />
+          ))}
+        </Picker>
+      </View>
 
-        <Pressable onPress={pickImage} style={{ margin: 10 }}>
-          <Text style={{ color: 'blue' }}>Chọn ảnh</Text>
+      <Pressable onPress={pickImage} style={{ padding: 15, alignItems: 'center', backgroundColor: 'transparent', margin: 10, borderRadius: 10, borderWidth: 1, borderColor: 'gray' }}>
+        <Text style={{ color: '#333', fontSize: 15 }}>Chọn ảnh món ăn</Text>
+      </Pressable>
+
+      {imageUri && (
+        <Image
+          source={{ uri: imageUri }}
+          style={{ width: '95%', height: 100, borderRadius: 10, margin: 10 }}
+        />
+      )}
+      
+      <View style={{ justifyContent: 'center', padding: 10 }}>
+        <Pressable
+          onPress={handleEditFood}
+          style={{
+            backgroundColor: "#FFB90F",
+            alignItems: 'center',
+            padding: 15,
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ color: '#fff', fontSize: 15, fontWeight: 'bold' }}>Lưu</Text>
         </Pressable>
-
-        {imageUri && (
-          <Image
-            source={{ uri: imageUri }}
-            style={{ width: "400", height: 200, borderRadius: 10, margin: 10 }}
-          />
-        )}
-        <View style={{ justifyContent: 'center', padding: 10 }}>
-          <Pressable
-            onPress={handleEditFood}
-            style={{
-              backgroundColor: "#FFB90F",
-              alignItems: 'center',
-              padding: 15,
-              borderRadius: 10,
-            }}
-          >
-            <Text style={{ color: '#fff', fontSize: 15, fontWeight: 'bold' }}>Lưu</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
+      </View>
+          </ScrollView>
     </View>
   );
 };

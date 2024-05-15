@@ -112,7 +112,7 @@ const Foods = ({ navigation }) => {
       };
       
     return (
-        <View style={{ backgroundColor: '#fff' }}>
+        <View style={{ backgroundColor: '#fff', height:'100%' }}>
             <View style={{ width: "95%", alignItems: 'center', alignSelf: 'center', margin: 10 }}>
                 <Searchbar
                     style={{
