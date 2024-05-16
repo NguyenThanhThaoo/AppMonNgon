@@ -18,8 +18,6 @@ const List = ({ navigation }) => {
     const [user, setUser] = useState(null);
     const [foods, setFoods] = useState([]);
     const [foodsList, setFilterFoods] = useState([]);
-    // const [categories, setCategories] = useState([]);
-    // const [category, setCategory] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
     const { login } = useMyContextController();
     const [showLike, setShowLike] = useState(false);
@@ -53,22 +51,6 @@ const List = ({ navigation }) => {
         setUser(user);
         if (initializing) setInitializing(false);
     };
-
-    // useEffect(() => {
-    //     const fetchCategories = async () => {
-    //       try {
-    //         // const db = getFirestore();
-    //         const categoriesSnapshot = await getDocs(collection(db, 'category'));
-    //         const categoriesList = categoriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    //         setCategories(categoriesList);
-    //       } catch (error) {
-    //         console.error('Error fetching categories: ', error);
-    //       }
-    //     };
-    
-    //     fetchCategories();
-    //   }, []);
-
 
 
     useEffect(() => {

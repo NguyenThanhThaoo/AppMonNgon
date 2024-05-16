@@ -15,6 +15,7 @@ import Drinks from './Drinks';
 import LikeFoods from './LikeFoods';
 import Approve from './Approve';
 import List from './List';
+import AdminScreen from './AdminScreen';
 const Tab = createBottomTabNavigator();
 const currentUser = auth().currentUser
 const getTabBarIcon = icon => ({ tintColor }) => (
@@ -77,8 +78,8 @@ useEffect(() => {
       /> ) :null}
       {user && user.email === 'ntthao6722@gmail.com' ? (
      <Tab.Screen
-     name="Duyệt món"
-     component={Approve}
+     name="Quản lý chung"
+     component={AdminScreen}
      options={{
        tabBarIcon: getTabBarIcon('wysiwyg'),
      }}

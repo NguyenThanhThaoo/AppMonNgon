@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconMT from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getFirestore, collection, query, onSnapshot, where, doc, deleteDoc } from '@react-native-firebase/firestore';
+import { getFirestore, collection, query, onSnapshot, where, doc, deleteDoc, getDocs, updateDoc,} from '@react-native-firebase/firestore';
 import { ScrollView } from 'react-native-virtualized-view';
 import auth from '@react-native-firebase/auth';
 
@@ -73,9 +73,17 @@ const LikeFoods = ({ navigation }) => {
 
     const handleDeleteFavorite = async (itemId) => {
         try {
+            // Xoá món ăn khỏi cơ sở dữ liệu Firebase
             const docRef = doc(db, 'favorites', currentUser.email, 'foods', itemId);
             await deleteDoc(docRef);
+    
+            // Cập nhật danh sách món ăn đã xoá
             setDeletedFoods([...deletedFoods, itemId]);
+    
+            // Lọc lại danh sách món ăn và loại bỏ món ăn đã xoá
+            const updatedFoodsList = foodsList.filter(item => item.id !== itemId);
+            setFoodsList(updatedFoodsList);
+    
             Alert.alert('', 'Đã bỏ thích!');
         } catch (error) {
             console.error('Error deleting item:', error);

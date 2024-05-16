@@ -17,6 +17,8 @@ import Reset from "./ResetPassword";
 import LikeFoods from "./LikeFoods";
 import Approve from "./Approve";
 import List from "./List";
+import AdminScreen from "./AdminScreen";
+import ApprovedFoodsScreen from "./ApprovedFoodsScreen";
 const Stack = createStackNavigator();
 const Router = () => {
     // const [controller, dispatch] = useMyContextController();
@@ -35,7 +37,9 @@ const Router = () => {
             <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
             <Stack.Screen name="Reset" component={Reset} options={{ headerShown: false }} />
             <Stack.Screen name="LikeFoods" component={LikeFoods} options={{ headerShown: false }} />
+            <Stack.Screen name="AdminScreen" component={AdminScreen} options={{ title: 'Quản Lý'  }} />
             <Stack.Screen name="Approve" component={Approve} options={{ title: 'Duyệt bài'  }} />
+            <Stack.Screen name="ApprovedFoodsScreen" component={ApprovedFoodsScreen} options={{ title: 'Đã duyệt bài'  }} />
             <Stack.Screen name="List" component={List} options={{ title: 'Danh sách món'  }} />
 
 
