@@ -73,10 +73,12 @@ const LikeFoods = ({ navigation }) => {
 
     const handleDeleteFavorite = async (itemId) => {
         try {
-            // Xoá món ăn khỏi cơ sở dữ liệu Firebase
-            const docRef = doc(db, 'favorites', currentUser.email, 'foods', itemId);
-            await deleteDoc(docRef);
-    
+            // // Xoá món ăn khỏi cơ sở dữ liệu Firebase
+            // const docRef = doc(db, 'favorites', currentUser.email, 'foods', itemId);
+            // await deleteDoc(docRef);
+            
+            await db.collection('favorites').doc(itemId).delete();
+
             // Cập nhật danh sách món ăn đã xoá
             setDeletedFoods([...deletedFoods, itemId]);
     

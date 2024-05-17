@@ -5,7 +5,7 @@ import firestore from '@react-native-firebase/firestore';
 import { ScrollView } from 'react-native-virtualized-view';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconMT from 'react-native-vector-icons/MaterialCommunityIcons';
-import auth from '@react-native-firebase/auth';
+import auth, { firebase } from '@react-native-firebase/auth';
 
 const FoodsDetail = ({ route }) => {
     const [initializing, setInitializing] = useState(true);
@@ -17,7 +17,7 @@ const FoodsDetail = ({ route }) => {
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editedComment, setEditedComment] = useState('');
     useEffect(() => {
-    console.log(user.email);
+    // console.log(user.email);
     }, []);
     const HandleLike = async () => {
         try {
@@ -233,6 +233,7 @@ const FoodsDetail = ({ route }) => {
                 ) : null}
 
                 {/* Input for adding comments */}
+                {user && user.email !== 'ntthao6722@gmail.com' ? (
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
                     <TextInput
                         style={{ flex: 1, borderWidth: 1, borderColor: '#ccc', borderRadius: 5, padding: 10, marginRight: 10 }}
@@ -247,6 +248,7 @@ const FoodsDetail = ({ route }) => {
                         <Text style={{ color: '#fff', fontWeight: 'bold' }}>Gửi</Text>
                     </Pressable>
                 </View>
+                ) : null}
             </View>
         </View>
     );

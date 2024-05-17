@@ -27,7 +27,7 @@ const Tabs = () => {
   const [user, setUser] = useState(null);
   useEffect(() => {
     if (currentUser) {
-        console.log(currentUser.email);
+        // console.log(currentUser.email);
     }
 }, [currentUser]);
 const onAuthStateChanged = user => {
@@ -78,7 +78,7 @@ useEffect(() => {
       /> ) :null}
       {user && user.email === 'ntthao6722@gmail.com' ? (
      <Tab.Screen
-     name="Quản lý chung"
+     name="Quản lý bài đăng"
      component={AdminScreen}
      options={{
        tabBarIcon: getTabBarIcon('wysiwyg'),
